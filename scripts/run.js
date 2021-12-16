@@ -1,12 +1,31 @@
 const main = async () => {
-    //  compiles the contract and generates the nec files under 'artifacts'
+
+    const waveMap = new Map()
+    const [owner, randomPerson] = await hre.ethers.getSigners();
     const waveContractFactory = await hre.ethers.getContractFactory('WavePortal');
-    //creates local Eth network for this contract. Destroyed after contract completed.
     const waveContract = await waveContractFactory.deploy();
-    // runs the constructor in WavePortal
     await waveContract.deployed();
-    // logs the address of the contract
+
     console.log("Contract deployed to:", waveContract.address);
+    console.log("Contract deployed by:", owner.address);
+
+    let waveCount;
+    waveCount = await waveContract.getTotalWaves();
+
+    let waveTxn = await waveContract.wave();
+    await waveTxn.wait();
+
+    waveCount = await waveContract.getTotalWaves();
+
+    const createMap = () => {
+        if (owner.address !== waveMap) {
+            waveMap.set(owner.address, waveCount)
+        } else {
+            waveMap.get(owner.address)++
+        }
+        console.log(waveMap)
+    }
+    await createMap();
 };
 
 const runMain = async () => {
