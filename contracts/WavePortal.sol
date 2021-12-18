@@ -17,7 +17,7 @@ contract WavePortal {
 
     Wave[] waves;
 
-    constructor() {
+    constructor() payable { //now we are allowed to pay people
         console.log("Smart Contract here");
     }
 
